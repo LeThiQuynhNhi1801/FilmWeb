@@ -1,14 +1,9 @@
 package film.api.DTO;
 
-import film.api.models.Chapter;
 import film.api.models.Film;
-import film.api.repository.ChapterRepository;
-import film.api.service.ChapterService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

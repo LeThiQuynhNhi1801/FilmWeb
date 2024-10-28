@@ -2,18 +2,12 @@ package film.api.DTO;
 
 import film.api.models.Actor;
 import film.api.models.Chapter;
-import film.api.models.Film;
 import film.api.service.ActorService;
-import film.api.service.CategoryService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

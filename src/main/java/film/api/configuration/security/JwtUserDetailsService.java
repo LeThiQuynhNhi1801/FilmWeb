@@ -12,22 +12,20 @@ import org.springframework.stereotype.Service;
 @Service
 public class JwtUserDetailsService implements UserDetailsService {
 
-    private UserService userService;
-    @Autowired
-    private PasswordEncoder bcryptEncoder;
+    private final UserService userService;
 
     public JwtUserDetailsService(UserService userService) {
         this.userService = userService;
     }
 
-    public User save(UserSignupDTO user) {
+    public User save(UserSignupDTO user, PasswordEncoder bcryptEncoder) {
         User newUser = new User();
         newUser.setUsername(user.getUsername());
         newUser.setFullname(user.getFullName());
         newUser.setPassword(bcryptEncoder.encode(user.getPassword()));
         return userService.save(newUser);
     }
-    public User ChangePassword(String username,UserChangePassword user) {
+    public User changePassword(String username,UserChangePassword user, PasswordEncoder bcryptEncoder) {
 
         user.setPasswordNew(bcryptEncoder.encode(user.getPasswordNew()));
         return userService.ChangePassword(username,user);

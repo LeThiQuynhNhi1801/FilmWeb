@@ -3,7 +3,6 @@ package film.api.controller;
 import film.api.DTO.ActorDTO;
 import film.api.exception.NotFoundException;
 import film.api.models.Actor;
-import film.api.repository.ActorRepository;
 import film.api.service.ActorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

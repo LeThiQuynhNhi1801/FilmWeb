@@ -3,6 +3,7 @@ package film.api.configuration.security.controller;
 import film.api.configuration.security.*;
 import film.api.models.User;
 import film.api.service.HistoryService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,9 +13,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 public class AuthenticationController {
@@ -26,9 +27,9 @@ public class AuthenticationController {
     private final UserDetailsService userDetailsService;
     @Autowired
 
-    private JwtUserDetailsService userDetailsServicea;
+    private JwtUserDetailsService jwtUserDetailsService;
     @Autowired
-    private HistoryService historyService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
@@ -49,12 +50,12 @@ public class AuthenticationController {
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @PatchMapping("/ApiV1/ChangePassword")
 
-    public ResponseEntity<?> ChangePassword(HttpServletRequest request,@RequestBody UserChangePassword userChangePassword) {
+    public ResponseEntity<?> ChangePassword(HttpServletRequest request, @RequestBody UserChangePassword userChangePassword) {
         String token = request.getHeader(tokenHeader).substring(7);
         String username = jwtUtil.getUsernameFromToken(token);
 
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, userChangePassword.getPassword()));
-        User userPatchPassword=userDetailsServicea.ChangePassword(username,userChangePassword);
+        User userPatchPassword=jwtUserDetailsService.changePassword(username,userChangePassword, passwordEncoder);
         return ResponseEntity.ok(userPatchPassword);
     }
 

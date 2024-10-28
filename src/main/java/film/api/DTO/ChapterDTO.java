@@ -1,16 +1,10 @@
 package film.api.DTO;
 
 import film.api.models.Chapter;
-import film.api.models.Film;
-import film.api.service.ActorService;
-import film.api.service.CategoryService;
-import film.api.service.ChapterService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data

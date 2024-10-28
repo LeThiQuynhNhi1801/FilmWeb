@@ -6,9 +6,9 @@ import film.api.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data

@@ -1,4 +1,5 @@
 package film.api.configuration.security;
+
 import film.api.models.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,18 +10,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true,jsr250Enabled = true)
-public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfiguration {
 
     private final JWTUtil jwtTokenUtil;
     private final JwtUserDetailsService jwtUserDetailsService;
@@ -37,69 +37,55 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.jwtUserDetailsService = jwtUserDetailsService;
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-            .userDetailsService(jwtUserDetailsService)
-            .passwordEncoder(passwordEncoderBean());
-    }
-
     @Bean
     public PasswordEncoder passwordEncoderBean() {
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
+    public AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
     }
 
-    @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        JWTTokenFilter authenticationTokenFilter = new JWTTokenFilter(jwtUserDetailsService, jwtTokenUtil, tokenHeader);
+
         httpSecurity
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/**").permitAll()
-                .antMatchers("/upload/**").permitAll()
-                .anyRequest().authenticated();
-        JWTTokenFilter authenticationTokenFilter = new JWTTokenFilter(userDetailsService(), jwtTokenUtil, tokenHeader);
-        httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
-        httpSecurity
+                .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/**").permitAll()
+                .requestMatchers("/upload/**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers()
                 .frameOptions().sameOrigin()
                 .cacheControl();
+
+        return httpSecurity.build();
     }
 
-    @Override
-    public void configure(WebSecurity web) throws Exception {
-        web
-            .ignoring()
-            .antMatchers(
-                    HttpMethod.POST,
-                    authenticationPath
-            )
-
-            // allow anonymous resource requests
-            .and()
-            .ignoring()
-            .antMatchers(
-                    HttpMethod.GET,
-
-                    "/*.html",
-                    "/favicon.ico",
-                    "/**/*.html",
-                    "/**/*.css",
-                    "/**/*.js",
-                    "/images/**",
-                    "/static/images/**",
-                    "/static/videos/**",
-                    "/videos/**",
-                    "/Login/**",
-                    "/Admin/**"
-            );
-
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring()
+                .requestMatchers(HttpMethod.POST, authenticationPath)
+                .requestMatchers(
+                        HttpMethod.GET,
+                        "/*.html",
+                        "/favicon.ico",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/images/**",
+                        "/static/images/**",
+                        "/static/videos/**",
+                        "/videos/**",
+                        "/Login/**",
+                        "/Admin/**"
+                );
     }
 }

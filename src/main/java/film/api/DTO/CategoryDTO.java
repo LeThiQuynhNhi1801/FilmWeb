@@ -3,10 +3,10 @@ package film.api.DTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.constraints.NotNull;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import  film.api.models.Category;
 import lombok.NoArgsConstructor;
 

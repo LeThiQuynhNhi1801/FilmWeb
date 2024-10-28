@@ -2,11 +2,11 @@ package film.api.controller;
 
 import film.api.Cosine.CosineSimilarity;
 import film.api.DTO.*;
-import film.api.exception.ExceptionResponse;
 import film.api.configuration.security.JWTUtil;
 import film.api.exception.NotFoundException;
 import film.api.models.*;
 import film.api.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.math3.linear.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,7 +18,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

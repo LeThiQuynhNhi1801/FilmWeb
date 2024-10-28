@@ -4,7 +4,6 @@ import film.api.DTO.*;
 import film.api.models.Category;
 import film.api.models.Chapter;
 import film.api.models.Film;
-import film.api.models.User;
 import film.api.service.ActorService;
 import film.api.service.CategoryService;
 import film.api.service.ChapterService;

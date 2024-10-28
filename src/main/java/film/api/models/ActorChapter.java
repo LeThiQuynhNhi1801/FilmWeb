@@ -1,6 +1,6 @@
 package film.api.models;
-import javax.validation.constraints.NotNull;
-import javax.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

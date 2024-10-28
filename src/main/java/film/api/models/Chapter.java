@@ -1,7 +1,7 @@
 package film.api.models;
 
-import javax.validation.constraints.NotNull;
-import javax.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
