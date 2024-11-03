@@ -2,6 +2,7 @@ package film.api.service.impl;
 
 import film.api.DTO.FilmRequestDTO;
 import film.api.exception.InvalidInputException;
+import film.api.exception.NotFoundException;
 import film.api.helper.FileSystemHelper;
 import film.api.models.*;
 import film.api.repository.*;
@@ -77,7 +78,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film findById(Long id) {
-        return filmRepository.findById(id).orElse(null);
+        return filmRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Film not found"));
     }
 
     @Override
@@ -171,7 +173,8 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public Film updateFilm(Long filmID, FilmRequestDTO filmPatch){
-        Film film = filmRepository.findById(filmID).orElse(null);
+        Film film = filmRepository.findById(filmID)
+                .orElseThrow(() -> new NotFoundException("Film not found"));
         Chapter chapter = chapterRepository.getChapterByFilmID(film.getId()).get(0);
 
         if(filmPatch.getFilmName()!=null||filmPatch.getFilmName().replaceAll("\\s+", "").equals("")==false)
@@ -207,7 +210,8 @@ public class FilmServiceImpl implements FilmService {
 
 
             for(Long i :actorList){
-                Actor actor =actorRepository.findById(i).orElse(null);
+                Actor actor =actorRepository.findById(i)
+                        .orElseThrow(() -> new NotFoundException("Actor not found"));
                 if(actor!=null){
                     ActorChapter  actorChapter = new ActorChapter(null,actor,chapter);
                     actorChapterRepository.save(actorChapter);
@@ -221,7 +225,8 @@ public class FilmServiceImpl implements FilmService {
             }
 
             for(Long i :categoryList){
-                Category category =categoryRepository.findById(i).orElse(null);
+                Category category =categoryRepository.findById(i)
+                        .orElseThrow(() -> new NotFoundException("Category not found"));;
                 if(category!=null){
                     CategoryFilm  categoryFilm = new CategoryFilm(null,category,film);
                     categoryFilmRepository.save(categoryFilm);

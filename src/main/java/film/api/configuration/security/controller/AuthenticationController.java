@@ -4,6 +4,7 @@ import film.api.configuration.security.*;
 import film.api.models.User;
 import film.api.service.HistoryService;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequiredArgsConstructor
 public class AuthenticationController {
 
     @Value("${jwt.header}")
@@ -26,18 +28,11 @@ public class AuthenticationController {
     private final JWTUtil jwtUtil;
     private final UserDetailsService userDetailsService;
     @Autowired
-
     private JwtUserDetailsService jwtUserDetailsService;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    public AuthenticationController(AuthenticationManager authenticationManager, JWTUtil jwtUtil,
-                                    @Qualifier("jwtUserDetailsService") UserDetailsService userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
+
 
     @RequestMapping(value = "${jwt.route.authentication.path}", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {

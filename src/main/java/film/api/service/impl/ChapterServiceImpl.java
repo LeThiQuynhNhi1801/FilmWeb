@@ -2,11 +2,9 @@ package film.api.service.impl;
 
 import film.api.DTO.ChapterRequestDTO;
 import film.api.exception.InvalidInputException;
+import film.api.exception.NotFoundException;
 import film.api.helper.FileSystemHelper;
-import film.api.models.Actor;
-import film.api.models.ActorChapter;
-import film.api.models.Chapter;
-import film.api.models.Film;
+import film.api.models.*;
 import film.api.repository.ActorChapterRepository;
 import film.api.repository.ActorRepository;
 import film.api.repository.ChapterRepository;
@@ -98,12 +96,14 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter findByID(Long chapterID){
-        return chapterRepository.findById(chapterID).orElse(null);
+        return chapterRepository.findById(chapterID)
+                .orElseThrow(() -> new NotFoundException("Chapter not found"));
     }
 
     @Override
     public Chapter addChapter(Long filmID, ChapterRequestDTO chapterPost){
-        Film film= filmRepository.findById(filmID).orElse(null);
+        Film film= filmRepository.findById(filmID)
+                .orElseThrow(() -> new NotFoundException("Film not found"));
         if(chapterPost.getChapterName()==null ||chapterPost.getChapterName().replaceAll("\\s+", "").equals("")){
             throw new InvalidInputException("Vui Lòng nhập Tên Chapter");
         }
@@ -157,7 +157,8 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public Chapter updateChapter(Long chapterID,ChapterRequestDTO chapterPatch) {
-        Chapter chapter = chapterRepository.findById(chapterID).orElse(null);
+        Chapter chapter = chapterRepository.findById(chapterID)
+                .orElseThrow(() -> new NotFoundException("Chapter not found"));
 
         if (chapterPatch.getChapterName() != null) {
             chapter.setChapterName(chapterPatch.getChapterName());
@@ -166,11 +167,10 @@ public class ChapterServiceImpl implements ChapterService {
             chapter.setChapterDescription(chapterPatch.getChapterDescription());
         }
         if(chapterPatch.getListActor()!=null ){
-            if(chapterPatch.getListActor().replaceAll("\\s+", "").equals(""))throw new IllegalArgumentException("Vui Lòng nhập Tên Chapter");
+            if(chapterPatch.getListActor().replaceAll("\\s+", "").isEmpty())
+                throw new IllegalArgumentException("Vui Lòng nhập Tên Chapter");
             List<ActorChapter> actorChapters=actorChapterRepository.findActorChapterByChapterId(chapterID);
-            for(ActorChapter actorChapter:actorChapters){
-                actorChapterRepository.delete(actorChapter);
-            }
+            actorChapterRepository.deleteAll(actorChapters);
             String[] actorString = chapterPatch.getListActor().split(",");
             Long[] actorList = new Long[actorString.length];
             for(int i = 0; i < actorString.length; i++) {
@@ -178,7 +178,8 @@ public class ChapterServiceImpl implements ChapterService {
             }
 
             for(Long i:actorList){
-                Actor actor=actorRepository.findById(i).orElseThrow(null);
+                Actor actor=actorRepository.findById(i)
+                        .orElseThrow(() -> new NotFoundException("Actor not found"));;
                 actorChapterRepository.save(new ActorChapter(null,actor,chapter));
             }
 

@@ -2,6 +2,7 @@ package film.api.service.impl;
 
 import film.api.DTO.ChapterHotDTO;
 import film.api.DTO.HistoryRequestDTO;
+import film.api.exception.NotFoundException;
 import film.api.models.Chapter;
 import film.api.models.History;
 import film.api.models.User;
@@ -106,7 +107,8 @@ public class HistoryServiceImpl implements HistoryService {
             ChapterHotDTO chapterHotDTO = new ChapterHotDTO();
             BigInteger bigInt = (BigInteger) result[0];
             Long chapterID = bigInt.longValue();
-            Chapter chapter = chapterRepository.findById(chapterID).orElse(null);
+            Chapter chapter = chapterRepository.findById(chapterID)
+                    .orElseThrow(() -> new NotFoundException("Chapter not found"));
             if (chapter != null) chapterHots.add(chapter);
 
         }
