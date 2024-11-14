@@ -1,6 +1,6 @@
 package film.api.service.impl;
 
-import film.api.DTO.ActorDTO;
+import film.api.DTO.response.ActorDTO;
 import film.api.exception.NotFoundException;
 import film.api.models.Actor;
 import film.api.repository.ActorRepository;

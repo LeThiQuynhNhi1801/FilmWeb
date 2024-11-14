@@ -1,16 +1,23 @@
 package film.api.service.impl;
 
-import film.api.DTO.ChapterHotDTO;
-import film.api.DTO.HistoryRequestDTO;
+import film.api.DTO.request.HistoryRequestDTO;
+import film.api.DTO.response.ChapterHotDTO;
+import film.api.DTO.response.HistoryDTO;
+import film.api.DTO.request.AddHistoryRequestDTO;
+import film.api.configuration.security.JWTUtil;
 import film.api.exception.NotFoundException;
 import film.api.models.Chapter;
 import film.api.models.History;
 import film.api.models.User;
 import film.api.repository.ChapterRepository;
 import film.api.repository.HistoryRepository;
+import film.api.repository.UserRepository;
 import film.api.service.HistoryService;
 import jakarta.persistence.NoResultException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -25,7 +32,12 @@ import java.util.Optional;
 public class HistoryServiceImpl implements HistoryService {
     private final HistoryRepository historyRepository;
     private final ChapterRepository chapterRepository;
+    private final UserRepository userRepository;
+    @Value("${jwt.header}")
+    private String tokenHeader;
 
+    @Autowired
+    private JWTUtil jwtUtil;
     @Override
     public List<History> getList() {
 
@@ -52,15 +64,14 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public History getHistory(Long idChapter, Long userID) {
-
+    public HistoryDTO getHistory(Long idChapter, Long userID) {
         try {
             History history = historyRepository.historyByUserIDAndChapterID(userID, idChapter);
-            return history;
+            HistoryDTO historyDTO = new HistoryDTO(history.getId(),history.getWatchedTime(),history.getChapter(),history.getUser(),history.getRate(),history.getDevice(),history.getWeather(),history.getTime(),history.getHistoryView());
+            return historyDTO;
         } catch (NoResultException ex) {
             return null;
         }
-
     }
 
     @Override
@@ -70,12 +81,26 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public History saveHistory(History history) {
-        return historyRepository.save(history);
+    public HistoryDTO saveHistory(Long chapterId, AddHistoryRequestDTO historyRequestDTO) {
+        Chapter chapter = chapterRepository.findById(chapterId).get();
+        History history = new History(null,historyRequestDTO.getWatchedTime(),chapter,historyRequestDTO.getUser(),historyRequestDTO.getRate(),historyRequestDTO.getHistoryView(),historyRequestDTO.getWeather(),historyRequestDTO.getDevice(),historyRequestDTO.getTime());
+        historyRepository.save(history);
+        HistoryDTO historyDTO = new HistoryDTO(history.getId(),history.getWatchedTime(),history.getChapter(),history.getUser(),history.getRate(),history.getDevice(),history.getWeather(),history.getTime(),history.getHistoryView());
+        return historyDTO;
     }
 
     @Override
-    public History updateHistory(User user, Chapter chapter, HistoryRequestDTO historyPatch) {
+    public HistoryDTO updateHistory(HistoryRequestDTO historyPatch,Long chapterId,HttpServletRequest request) {
+        String token = request.getHeader(tokenHeader).substring(7);
+        String username = jwtUtil.getUsernameFromToken(token);
+        User user =userRepository.findByUsername(username);
+        if(user ==null){
+            throw new NotFoundException("User này không tồn tại");
+        }
+        Chapter chapter=chapterRepository.findById(chapterId).get();
+        if(chapter ==null){
+            throw new NotFoundException("Chapter này không tồn tại");
+        }
         History history = historyRepository.historyByUserIDAndChapterID(user.getId(), chapter.getId());
         if (historyPatch.getRate() != null) {
             history.setRate(historyPatch.getRate());
@@ -86,7 +111,9 @@ public class HistoryServiceImpl implements HistoryService {
         if (historyPatch.getWatchedTime() != null) {
             history.setWatchedTime(historyPatch.getWatchedTime());
         }
-        return historyRepository.save(history);
+        historyRepository.save(history);
+        HistoryDTO historyDTO = new HistoryDTO(history.getId(),history.getWatchedTime(),history.getChapter(),history.getUser(),history.getRate(),history.getDevice(),history.getWeather(),history.getTime(),history.getHistoryView());
+        return historyDTO;
     }
 
     @Override

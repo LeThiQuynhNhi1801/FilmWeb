@@ -1,9 +1,10 @@
 package film.api.controller;
 
-import film.api.DTO.ActorDTO;
+import film.api.DTO.response.ActorDTO;
 import film.api.exception.NotFoundException;
 import film.api.models.Actor;
 import film.api.service.ActorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +12,11 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/ApiV1", produces = "application/json")
+@Slf4j
+@CrossOrigin("*")
 public class ActorController {
 
     @Autowired

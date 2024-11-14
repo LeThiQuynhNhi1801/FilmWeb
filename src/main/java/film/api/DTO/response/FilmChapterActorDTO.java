@@ -1,5 +1,7 @@
-package film.api.DTO;
+package film.api.DTO.response;
 
+import film.api.DTO.response.CategoryDTO;
+import film.api.DTO.response.ChapterActorsDTO;
 import film.api.models.Category;
 import film.api.models.Chapter;
 import film.api.models.Film;

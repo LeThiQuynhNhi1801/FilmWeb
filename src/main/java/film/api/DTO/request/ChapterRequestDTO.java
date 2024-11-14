@@ -1,4 +1,4 @@
-package film.api.DTO;
+package film.api.DTO.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

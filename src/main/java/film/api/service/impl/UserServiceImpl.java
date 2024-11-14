@@ -1,6 +1,6 @@
 package film.api.service.impl;
 
-import film.api.DTO.UserByAdminDTO;
+import film.api.DTO.response.UserByAdminDTO;
 import film.api.configuration.security.UserChangePassword;
 import film.api.exception.NotFoundException;
 import film.api.models.Role;

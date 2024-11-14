@@ -1,15 +1,14 @@
-package film.api.DTO;
+package film.api.DTO.response;
 
 import film.api.models.Film;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.List;
+import jakarta.validation.constraints.NotNull;
 
 @Data
 @AllArgsConstructor
-public class FilmChaptersDTO {
-
+public class FilmDTO {
     private Long Id;
 
 
@@ -29,8 +28,7 @@ public class FilmChaptersDTO {
 
 
     private String FilmImage;
-    private List<ChapterDTO> chapters;
-    public FilmChaptersDTO(Film film){
+    public FilmDTO(Film film){
         this.Id=film.getId();
         this.FilmName=film.getFilmName();
         this.BannerFilmName=film.getBannerFilmName();
@@ -38,6 +36,5 @@ public class FilmChaptersDTO {
         this.FilmImage=film.getFilmImage();
         this.FilmDescription=film.getFilmDescription();
         this.TrailerFilm =film.getTrailerFilm();
-
     }
 }

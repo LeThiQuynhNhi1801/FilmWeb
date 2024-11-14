@@ -1,6 +1,6 @@
 package film.api.service.impl;
 
-import film.api.DTO.ChapterRequestDTO;
+import film.api.DTO.request.ChapterRequestDTO;
 import film.api.exception.InvalidInputException;
 import film.api.exception.NotFoundException;
 import film.api.helper.FileSystemHelper;

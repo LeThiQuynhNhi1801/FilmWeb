@@ -1,6 +1,6 @@
 package film.api.service.impl;
 
-import film.api.DTO.CategoryDTO;
+import film.api.DTO.response.CategoryDTO;
 import film.api.exception.NotFoundException;
 import film.api.models.Category;
 import film.api.repository.CategoryRepository;

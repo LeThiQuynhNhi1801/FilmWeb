@@ -1,12 +1,17 @@
 package film.api.controller;
 
 import film.api.Cosine.CosineSimilarity;
-import film.api.DTO.*;
+import film.api.DTO.request.AddHistoryRequestDTO;
+import film.api.DTO.request.HistoryRequestDTO;
+import film.api.DTO.response.ChapterDTO;
+import film.api.DTO.response.ChapterHotDTO;
+import film.api.DTO.response.HistoryDTO;
 import film.api.configuration.security.JWTUtil;
 import film.api.exception.NotFoundException;
 import film.api.models.*;
 import film.api.service.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.linear.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,6 +31,8 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/ApiV1")
+@Slf4j
+@CrossOrigin("*")
 public class HistoryController {
     @Value("${jwt.header}")
     private String tokenHeader;
@@ -70,39 +77,22 @@ public class HistoryController {
     public ResponseEntity<?> getHistoryByChapterIDAndUserLogin(HttpServletRequest request, @PathVariable Long chapterId) {
         String token = request.getHeader(tokenHeader).substring(7);
         String username = jwtUtil.getUsernameFromToken(token);
-        Long userID = historyService.getUserID(username);
-        History history = historyService.getHistory(chapterId, userID);
-        if(history==null){
-           throw  new NotFoundException("User chưa xem Chapter này.");
-        }
-    return new ResponseEntity<>(new HistoryDTO(history), HttpStatus.OK);
+        Long userID = userService.findByUsername(username).getId();
+        HistoryDTO historyDTO = historyService.getHistory(chapterId,userID);
+        return new ResponseEntity<>(historyDTO,HttpStatus.OK);
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PostMapping("/HistoryByChapterIDAndUserLogin/{chapterId}")
-    public ResponseEntity<?> addHistoryByChapterIDAndUserLogin(HttpServletRequest request, @PathVariable Long chapterId){
-        String token = request.getHeader(tokenHeader).substring(7);
-        String username = jwtUtil.getUsernameFromToken(token);
-        Long userID = historyService.getUserID(username);
+    public ResponseEntity<?> addHistoryByChapterIDAndUserLogin( @PathVariable Long chapterId,@RequestBody AddHistoryRequestDTO historyDTO){
 
-        History history =new History   (null,0,chapterService.getChapter(chapterId),userService.findById(userID),0,LocalDateTime.now());
-        historyService.saveHistory(history);
-        return new ResponseEntity<>(new HistoryDTO(history), HttpStatus.CREATED);
+        HistoryDTO history = historyService.saveHistory(chapterId,historyDTO);
+        return new ResponseEntity<>(history, HttpStatus.CREATED);
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PatchMapping("/HistoryByChapterIDAndUserLogin/{chapterId}")
     public ResponseEntity<?> updateHistoryByChapterIDAndUserLogin(HttpServletRequest request, @PathVariable Long chapterId, @RequestBody HistoryRequestDTO historyRequestDTO){
-        String token = request.getHeader(tokenHeader).substring(7);
-        String username = jwtUtil.getUsernameFromToken(token);
-        User user =userService.findByUsername(username);
-        if(user ==null){
-            throw new NotFoundException("User này không tồn tại");
-        }
-        Chapter chapter=chapterService.findByID(chapterId);
-        if(chapter ==null){
-            throw new NotFoundException("Chapter này không tồn tại");
-        }
-        History history=historyService.updateHistory(user,chapter,historyRequestDTO);
-        return new ResponseEntity<>(new HistoryDTO(history), HttpStatus.OK);
+        HistoryDTO historyDTO = historyService.updateHistory(historyRequestDTO,chapterId,request);
+        return new ResponseEntity<>(historyDTO, HttpStatus.OK);
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @GetMapping("/HistoryUserLogin")

@@ -1,4 +1,4 @@
-package film.api.DTO;
+package film.api.DTO.response;
 
 import film.api.models.Chapter;
 import film.api.models.History;
@@ -9,9 +9,13 @@ import lombok.Data;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
+import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class HistoryDTO {
     private Long id;
@@ -26,14 +30,13 @@ public class HistoryDTO {
 
     private Integer Rate;
 
+    private String device;
+
+    private String weather;
+
+    private Timestamp time;
+
 
     private LocalDateTime HistoryView;
-    public HistoryDTO(History history){
-        this.id =history.getId();
-        this.Chapter=history.getChapter();
-        this.HistoryView=history.getHistoryView();
-        this.Rate=history.getRate();
-        this.WatchedTime=history.getWatchedTime();
-        this.User=history.getUser();
-    }
+
 }

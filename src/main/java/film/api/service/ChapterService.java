@@ -1,6 +1,6 @@
 package film.api.service;
 
-import film.api.DTO.ChapterRequestDTO;
+import film.api.DTO.request.ChapterRequestDTO;
 import film.api.models.Chapter;
 import org.springframework.web.multipart.MultipartFile;
 

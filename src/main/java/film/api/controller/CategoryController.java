@@ -1,9 +1,10 @@
 package film.api.controller;
 
-import film.api.DTO.CategoryDTO;
+import film.api.DTO.response.CategoryDTO;
 import film.api.exception.NotFoundException;
 import film.api.models.Category;
 import film.api.service.CategoryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,8 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Slf4j
+@CrossOrigin("*")
 @RestController
 @RequestMapping(path = "/ApiV1", produces = "application/json")
 public class CategoryController {

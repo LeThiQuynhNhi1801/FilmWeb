@@ -1,4 +1,4 @@
-package film.api.DTO;
+package film.api.DTO.response;
 
 import lombok.Data;
 
