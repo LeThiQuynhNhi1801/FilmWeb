@@ -51,4 +51,10 @@ public class ChapterController {
 
         return new ResponseEntity<>(newChapterList, HttpStatus.OK);
     }
+    @Secured({"ROLE_ADMIN","ROLE_USER"})
+    @GetMapping("/play/{chapterID}")
+    public ResponseEntity<?> playChapter(@PathVariable("chapterID") Long chapterID){
+        return null;
+    }
+
 }

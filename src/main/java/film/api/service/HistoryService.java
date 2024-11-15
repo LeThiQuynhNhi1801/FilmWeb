@@ -25,7 +25,7 @@ public interface HistoryService {
 
     HistoryDTO updateHistory(HistoryRequestDTO historyPatch, Long chapterId, HttpServletRequest httpServletRequest);
 
-    List<HistoryDTO> getListhistory(Long id);
+    List<History> getListhistory(Long id);
 
     List<Chapter> findChaptersByUserId(Long filmID);
 

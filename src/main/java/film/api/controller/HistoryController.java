@@ -267,7 +267,7 @@ public class HistoryController {
         //thay đổi các giá trị 0 thành điểm số Rate trong history nếu người dùng đã đánh giá
         for(int i=0;i<chapters.size();i++){
             for(int j=0;j<users.size();j++){
-                History rating = historyService.getHistory(chapters.get(i).getId(),users.get(j).getId());
+                HistoryDTO rating = historyService.getHistory(chapters.get(i).getId(),users.get(j).getId());
                 if (rating==null){
                     ratings_matrix.setEntry(i,j,0);
                 }else {
