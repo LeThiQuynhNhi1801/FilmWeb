@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 public class AddHistoryRequestDTO {
 
     private Double WatchedTime;
-    private User user;
 
 
     private Integer Rate;

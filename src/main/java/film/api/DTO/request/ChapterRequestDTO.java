@@ -15,4 +15,5 @@ public class ChapterRequestDTO {
     private MultipartFile chapterImage;
     private MultipartFile trailerChapter;
     private MultipartFile video;
+    private String listDirector;
 }

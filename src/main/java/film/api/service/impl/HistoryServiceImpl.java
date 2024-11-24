@@ -81,18 +81,17 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public HistoryDTO saveHistory(Long chapterId, AddHistoryRequestDTO historyRequestDTO) {
+    public HistoryDTO saveHistory(Long chapterId, AddHistoryRequestDTO historyRequestDTO,String username) {
+        User user =userRepository.findByUsername(username);
         Chapter chapter = chapterRepository.findById(chapterId).get();
-        History history = new History(null,historyRequestDTO.getWatchedTime(),chapter,historyRequestDTO.getUser(),historyRequestDTO.getRate(),historyRequestDTO.getHistoryView(),historyRequestDTO.getWeather(),historyRequestDTO.getDevice(),historyRequestDTO.getTime());
+        History history = new History(null,historyRequestDTO.getWatchedTime(),chapter,user,historyRequestDTO.getRate(),historyRequestDTO.getHistoryView(),historyRequestDTO.getWeather(),historyRequestDTO.getDevice(),historyRequestDTO.getTime());
         historyRepository.save(history);
         HistoryDTO historyDTO = new HistoryDTO(history.getId(),history.getWatchedTime(),history.getChapter(),history.getUser(),history.getRate(),history.getDevice(),history.getWeather(),history.getTime(),history.getHistoryView());
         return historyDTO;
     }
 
     @Override
-    public HistoryDTO updateHistory(HistoryRequestDTO historyPatch,Long chapterId,HttpServletRequest request) {
-        String token = request.getHeader(tokenHeader).substring(7);
-        String username = jwtUtil.getUsernameFromToken(token);
+    public HistoryDTO updateHistory(HistoryRequestDTO historyPatch,Long chapterId,String username) {
         User user =userRepository.findByUsername(username);
         if(user ==null){
             throw new NotFoundException("User này không tồn tại");

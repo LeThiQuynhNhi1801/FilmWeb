@@ -83,15 +83,19 @@ public class HistoryController {
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PostMapping("/HistoryByChapterIDAndUserLogin/{chapterId}")
-    public ResponseEntity<?> addHistoryByChapterIDAndUserLogin( @PathVariable Long chapterId,@RequestBody AddHistoryRequestDTO historyDTO){
+    public ResponseEntity<?> addHistoryByChapterIDAndUserLogin(HttpServletRequest request, @PathVariable Long chapterId,@RequestBody AddHistoryRequestDTO historyDTO){
+        String token = request.getHeader(tokenHeader).substring(7);
+        String username = jwtUtil.getUsernameFromToken(token);
 
-        HistoryDTO history = historyService.saveHistory(chapterId,historyDTO);
+        HistoryDTO history = historyService.saveHistory(chapterId,historyDTO,username);
         return new ResponseEntity<>(history, HttpStatus.CREATED);
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})
     @PatchMapping("/HistoryByChapterIDAndUserLogin/{chapterId}")
     public ResponseEntity<?> updateHistoryByChapterIDAndUserLogin(HttpServletRequest request, @PathVariable Long chapterId, @RequestBody HistoryRequestDTO historyRequestDTO){
-        HistoryDTO historyDTO = historyService.updateHistory(historyRequestDTO,chapterId,request);
+        String token = request.getHeader(tokenHeader).substring(7);
+        String username = jwtUtil.getUsernameFromToken(token);
+        HistoryDTO historyDTO = historyService.updateHistory(historyRequestDTO,chapterId,username);
         return new ResponseEntity<>(historyDTO, HttpStatus.OK);
     }
     @Secured({"ROLE_ADMIN","ROLE_USER"})

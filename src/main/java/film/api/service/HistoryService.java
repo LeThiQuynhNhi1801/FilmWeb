@@ -21,9 +21,9 @@ public interface HistoryService {
 
     Long getUserID(String username);
 
-    HistoryDTO saveHistory(Long chapterId, AddHistoryRequestDTO historyRequestDTO);
+    HistoryDTO saveHistory(Long chapterId, AddHistoryRequestDTO historyRequestDTO, String username);
 
-    HistoryDTO updateHistory(HistoryRequestDTO historyPatch, Long chapterId, HttpServletRequest httpServletRequest);
+    HistoryDTO updateHistory(HistoryRequestDTO historyPatch, Long chapterId,String username);
 
     List<History> getListhistory(Long id);
 

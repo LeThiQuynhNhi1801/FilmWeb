@@ -32,7 +32,7 @@ public class Chapter {
 
     @NotNull
     @JsonIgnore
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "film_id")
     private Film Film;
 

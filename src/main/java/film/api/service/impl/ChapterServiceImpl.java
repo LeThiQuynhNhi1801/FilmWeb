@@ -5,10 +5,7 @@ import film.api.exception.InvalidInputException;
 import film.api.exception.NotFoundException;
 import film.api.helper.FileSystemHelper;
 import film.api.models.*;
-import film.api.repository.ActorChapterRepository;
-import film.api.repository.ActorRepository;
-import film.api.repository.ChapterRepository;
-import film.api.repository.FilmRepository;
+import film.api.repository.*;
 import film.api.service.ChapterService;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +33,10 @@ public class ChapterServiceImpl implements ChapterService {
     private ActorChapterRepository actorChapterRepository;
     @Autowired
     private ActorRepository actorRepository;
+    @Autowired
+    private DirectorRepository directorRepository;
+    @Autowired
+    private DirectorChapterRepository directorChapterRepository;
 
     @Override
     public String getUniqueFileName(String fileName, String uploadDir) {
@@ -53,24 +54,54 @@ public class ChapterServiceImpl implements ChapterService {
 
     @Override
     public String saveFile(MultipartFile file, String typeFile){
-        // Lưu file vào thư mục image
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-        String fileNameNew =getUniqueFileName(fileName, FileSystemHelper.STATIC_FILES_DIR);
+        String fileNameNew = getUniqueFileName(fileName, FileSystemHelper.STATIC_FILES_DIR);
 
+        // Đường dẫn để lưu file
         Path path = Paths.get(FileSystemHelper.STATIC_FILES_DIR, fileNameNew);
-        System.out.println("saved file path: "+ path.toString());
+        System.out.println("Saved file path: " + path.toString());
+
         try {
             Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error saving file", e);
         }
 
-        // Lưu đường dẫn của file vào CSDL
+        // Kiểm tra phần mở rộng của file
+        String extension = FilenameUtils.getExtension(fileNameNew).toLowerCase();
+        String urlBasePath;
+
+        if ("mp4".equals(extension)) {
+            urlBasePath = "/play/";
+        } else {
+            urlBasePath = "/api/files/";
+        }
+
+        // Tạo đường dẫn URL trả về
         String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/get-file/")
+                .path(urlBasePath)
                 .path(fileNameNew)
                 .toUriString();
-        return  fileUrl;
+
+        return fileUrl;
+//        // Lưu file vào thư mục image
+//        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+//        String fileNameNew =getUniqueFileName(fileName, FileSystemHelper.STATIC_FILES_DIR);
+//
+//        Path path = Paths.get(FileSystemHelper.STATIC_FILES_DIR, fileNameNew);
+//        System.out.println("saved file path: "+ path.toString());
+//        try {
+//            Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//
+//        // Lưu đường dẫn của file vào CSDL
+//        String fileUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+//                .path("/play/")
+//                .path(fileNameNew)
+//                .toUriString();
+//        return  fileUrl;
     }
 
 
@@ -110,7 +141,9 @@ public class ChapterServiceImpl implements ChapterService {
         if(chapterPost.getListActor()==null ||chapterPost.getListActor().replaceAll("\\s+", "").equals("")){
             throw new InvalidInputException("Vui Lòng nhập Tên Actor");
         }
-
+        if(chapterPost.getListDirector()==null ||chapterPost.getListDirector().replaceAll("\\s+", "").equals("")){
+            throw new InvalidInputException("Vui Lòng nhập Tên Director");
+        }
 
         if(chapterPost.getChapterDescription()==null||chapterPost.getChapterDescription().replaceAll("\\s+", "").equals("")){
             throw new InvalidInputException("Vui Lòng nhập  Mô Tả Chapter");
@@ -151,7 +184,15 @@ public class ChapterServiceImpl implements ChapterService {
             Actor actor=actorRepository.findById(i).orElseThrow(null);
             actorChapterRepository.save(new ActorChapter(null,actor,chapterNew));
         }
-
+        String[] directorString = chapterPost.getListDirector().split(",");
+        Long[] directorList = new Long[directorString.length];
+        for(int i = 0; i < directorString.length; i++) {
+            directorList[i] = Long.parseLong(directorString[i]);
+        }
+        for(Long i:directorList){
+            Director director=directorRepository.findById(i).orElseThrow(null);
+            directorChapterRepository.save(new DirectorChapter(null,director,chapterNew));
+        }
         return chapterNew;
     }
 
@@ -185,6 +226,24 @@ public class ChapterServiceImpl implements ChapterService {
 
         }
 
+        if(chapterPatch.getListDirector()!=null ){
+            if(chapterPatch.getListDirector().replaceAll("\\s+", "").equals(""))throw new IllegalArgumentException("Vui Lòng nhập Tên Chapter");
+            List<DirectorChapter> directorChapters=directorChapterRepository.findDirectorChapterByChapterId(chapterID);
+            for(DirectorChapter directorChapter:directorChapters){
+                directorChapterRepository.delete(directorChapter);
+            }
+            String[] directorString = chapterPatch.getListDirector().split(",");
+            Long[] directorList = new Long[directorString.length];
+            for(int i = 0; i < directorString.length; i++) {
+                directorList[i] = Long.parseLong(directorString[i]);
+            }
+
+            for(Long i:directorList){
+                Director director=directorRepository.findById(i).orElseThrow(null);
+                directorChapterRepository.save(new DirectorChapter(null,director,chapter));
+            }
+
+        }
         if (chapterPatch.getChapterImage() != null) {
             String image = saveFile(chapterPatch.getChapterImage(),"Images");
 

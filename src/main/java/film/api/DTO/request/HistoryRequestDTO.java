@@ -11,9 +11,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HistoryRequestDTO {
-    Long id;
+
     private Double WatchedTime;
-    private User user;
 
 
     private Integer Rate;
@@ -23,7 +22,6 @@ public class HistoryRequestDTO {
 
     private String device;
 
-    private String weather;
 
     private Timestamp time;
 }
