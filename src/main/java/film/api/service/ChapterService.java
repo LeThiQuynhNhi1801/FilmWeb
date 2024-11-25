@@ -25,7 +25,7 @@ public interface ChapterService {
 
     Chapter updateChapter(Long chapterID, ChapterRequestDTO chapterPatch);
 
-    List<Chapter> findAllByNotInId(List<Long> chapterIDList);
+//    List<Chapter> findAllByNotInId(List<Long> chapterIDList);
 
     List<Chapter> newestChapters();
 }

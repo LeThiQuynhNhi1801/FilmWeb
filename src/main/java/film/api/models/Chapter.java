@@ -53,4 +53,14 @@ public class Chapter {
 
     @NotNull
     private String ChapterStatus;
+
+//    @NotNull
+//    @ManyToOne
+//    @JoinColumn(name = "actor_id")
+//    private Actor actor;
+//
+//    @NotNull
+//    @ManyToOne
+//    @JoinColumn(name = "director_id")
+//    private Director director;
 }

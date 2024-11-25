@@ -261,10 +261,10 @@ public class ChapterServiceImpl implements ChapterService {
         return chapter;
     }
 
-    @Override
-    public List<Chapter> findAllByNotInId(List<Long> chapterIDList){
-        return chapterRepository.findAllByIdNotIn(chapterIDList);
-    }
+//    @Override
+//    public List<Chapter> findAllByNotInId(List<Long> chapterIDList){
+//        return chapterRepository.findAllByIdNotIn(chapterIDList);
+//    }
 
     @Override
     public List<Chapter> newestChapters(){

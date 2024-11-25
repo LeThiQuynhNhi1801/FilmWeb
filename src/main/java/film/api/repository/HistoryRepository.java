@@ -25,5 +25,8 @@ public interface HistoryRepository extends JpaRepository<History, Long> {
     @Query("SELECT h.Chapter FROM History h WHERE h.User.id = :userID")
     List<Chapter> findChaptersByUserId(@Param("userID") Long userID);
 
+    @Query("select h.Rate from History h where h.User.Id=:idUser and h.Chapter.Id=:idChapter")
+    int ratingbychapteranduser(@Param("idUser") Long idUser, @Param("idChapter") Long idChapter);
+
 
 }
