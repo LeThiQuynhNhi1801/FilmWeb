@@ -31,4 +31,7 @@ public interface ChapterRepository extends JpaRepository<Chapter, Long> {
 
     @Query("select c from Chapter c join History h on h.Chapter.Id = c.Id where h.User.Id =:idUser")
     List<Chapter> UserWatched(@Param("idUser") Long idUser);
+
+//    @Query("select c.Id from Chapter c where c.idChapter=:idChapter")
+//    Long getId(@Param("idChapter") String idChapter);
 }

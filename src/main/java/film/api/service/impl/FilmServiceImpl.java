@@ -175,7 +175,7 @@ public class FilmServiceImpl implements FilmService {
                 Category category = categoryRepository.findById(i).orElseThrow(null);
                 categoryFilmRepository.save(new CategoryFilm(null, category, film));
             }
-            Chapter chapterNew = new Chapter(null, "", 1, video, film, "", trailer, image, LocalDateTime.now(), null, status);
+            Chapter chapterNew = new Chapter(null,"", "", 1, video, film, "", trailer, image, LocalDateTime.now(), null, status);
             if (filmPost.getFilmBollen() == 0) {
                 chapterNew.setChapterName(filmPost.getFilmName());
                 chapterNew.setChapterDescription(filmPost.getDescription());

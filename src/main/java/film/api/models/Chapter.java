@@ -21,6 +21,8 @@ public class Chapter {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
 
+    private String idChapter;
+
     @NotNull
     private String ChapterName;
 

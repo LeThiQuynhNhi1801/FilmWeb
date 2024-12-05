@@ -28,4 +28,6 @@ public interface ChapterService {
 //    List<Chapter> findAllByNotInId(List<Long> chapterIDList);
 
     List<Chapter> newestChapters();
+
+//    List<Long> getIDChapter(A a);
 }

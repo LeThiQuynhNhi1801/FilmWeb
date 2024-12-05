@@ -2,6 +2,7 @@ package film.api.controller;
 
 import film.api.Cosine.CosineSimilarity;
 import film.api.DTO.request.AddHistoryRequestDTO;
+import film.api.DTO.request.ContextRequestDTO;
 import film.api.DTO.request.HistoryRequestDTO;
 import film.api.DTO.response.ChapterDTO;
 import film.api.DTO.response.ChapterHotDTO;
@@ -53,6 +54,9 @@ public class HistoryController {
     private UserService userService;
     @Autowired
     private ActorService actorService;
+    @Autowired
+    private RecommendService recommendationService;
+
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/ChapterHotFromDaytoDay")
     public ResponseEntity<?> getChapterHotFromDayToDay(
@@ -340,5 +344,12 @@ public class HistoryController {
 //        }
 //        return  new ResponseEntity<>(recommendedChapters,HttpStatus.OK);
 //    }
-
+    @PostMapping("/recommendation")
+    public ResponseEntity<?> recommendMovies(HttpServletRequest request,
+                                      @RequestBody ContextRequestDTO contextRequestDTO) {
+        String token = request.getHeader(tokenHeader).substring(7);
+        String username = jwtUtil.getUsernameFromToken(token);
+        int topN = 4;
+        return new ResponseEntity<>(recommendationService.recommend(username, contextRequestDTO, topN),HttpStatus.OK);
+    }
 }

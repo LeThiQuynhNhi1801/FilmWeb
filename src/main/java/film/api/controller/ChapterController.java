@@ -56,5 +56,9 @@ public class ChapterController {
     public ResponseEntity<?> playChapter(@PathVariable("chapterID") Long chapterID){
         return null;
     }
-
+//    @Secured({"ROLE_ADMIN","ROLE_USER"})
+//    @GetMapping("/getid")
+//    public ResponseEntity<?> getid(@RequestBody A a){
+//        return new ResponseEntity<>(chapterService.getIDChapter(a),HttpStatus.OK);
+//    }
 }

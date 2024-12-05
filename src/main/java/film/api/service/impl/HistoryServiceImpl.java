@@ -14,7 +14,6 @@ import film.api.repository.HistoryRepository;
 import film.api.repository.UserRepository;
 import film.api.service.HistoryService;
 import jakarta.persistence.NoResultException;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

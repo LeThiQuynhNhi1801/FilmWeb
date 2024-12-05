@@ -170,7 +170,7 @@ public class ChapterServiceImpl implements ChapterService {
         }else {
             chapterNumber+=1;
         }
-        Chapter chapter =new Chapter(null,chapterPost.getChapterName(),chapterNumber,video,film,chapterPost.getChapterDescription(),trailerChapter,imageChapter, LocalDateTime.now(),null,status);
+        Chapter chapter =new Chapter(null,"",chapterPost.getChapterName(),chapterNumber,video,film,chapterPost.getChapterDescription(),trailerChapter,imageChapter, LocalDateTime.now(),null,status);
         if(chapterPost.getVideo()!=null){
             chapter.setChapterPremieredDay(LocalDateTime.now());
         }
@@ -270,4 +270,14 @@ public class ChapterServiceImpl implements ChapterService {
     public List<Chapter> newestChapters(){
         return chapterRepository.Newest();
     }
+
+//    @Override
+//    public List<Long> getIDChapter(A a) {
+//        List<Long> list = new ArrayList<>();
+//        List<String> stringList = a.getList();
+//        for(int i=0;i<stringList.size();i++){
+//            list.add(chapterRepository.getId(stringList.get(i)));
+//        }
+//        return list;
+//    }
 }
